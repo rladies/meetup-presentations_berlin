@@ -1,17 +1,13 @@
-# meetup-presentations_berlin
-Collection of presentation and information
-
-## Resources
-How to install R Studio Desktop and get ready
-
-## Meet-ups
-### Dec2016 - Kick-off meeting
-Presentation slides
-
-### March2017 - #1 Hands-on data vis with ggplot2
-Presentation slides
-Guest speaker R-Lady Mia from Teipei
-R-Notebook tutorial ggplot2
-
-
-
+<img src="https://github.com/rladies/starter-kit/blob/master/logo/R-LadiesGlobal_RBG_online_LogoWithText_Horizontal.png" data-canonical-src="https://github.com/rladies/starter-kit/blob/master/logo/R-LadiesGlobal_RBG_online_LogoWithText_Horizontal.png" width="300" height="100" />
+ 
+  # R-Ladies Berlin
+ 
+  R-Ladies Berlin founded in October 2016.
+  
+  
+ ##2017
+  [2017-03 Hands-on data vis with ggplot2](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-01_Hands_on_datavis_ggplot2)
+ 
+ ##2016
+  [2016-12_Kick-off meet-up](https://github.com/rladies/meetup-presentations_berlin/tree/master/2016-12_KickOff_RLB)
+   

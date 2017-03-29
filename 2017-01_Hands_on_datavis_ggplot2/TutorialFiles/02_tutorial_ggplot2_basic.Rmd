@@ -1,0 +1,364 @@
+---
+title: 'Hands-on data visualization with ggplot2 - tutorial: basics'
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document: default
+---
+
+
+## Introduction
+
+```{r init_libraries}
+library(ggplot2)
+
+#another useful packages
+library(RColorBrewer)
+
+
+#make plots nicer
+# R-Ladies ggplot2 theme from Samantha Tyner
+
+r_ladies_theme <- function(base_size){
+  theme_bw(base_size) %+replace%
+    theme(axis.text = element_text(colour = "#181818"),
+          axis.title = element_text(face = "bold", colour = "#88398A", size = rel(1.1)),
+          plot.title = element_text(face = "bold", size = rel(1.4),
+                                    colour = "#88398A",
+                                    margin = margin(t = 0, r = 0, b = 6.6,
+                                                    l = 0, unit = "pt")),
+          legend.title = element_text(face = "bold", colour = "#181818"),
+          panel.grid.major = element_line(color = "#D3D3D3"))
+}
+
+theme_set(r_ladies_theme(base_size = 9))
+
+```
+
+
+Welcome to your first steps in data visualization using [Hardley Wickhams package ggplot2](http://ggplot2.org). 
+Browse the linked website for further in detail information. 
+
+At this place we're going to focus how to code the five basic plots types in R and to understand the grammar of ggplot2. 
+We're using the ggplot2 integrated dataset [diamonds](http://docs.ggplot2.org/0.9.3.1/diamonds.html).
+
+Corresponding tutorial slides are stored in our [GitHub repo](https://github.com/rladies/meetup-presentations_berlin).
+
+## Dataset: diamonds
+
+Diamonds is a dataset containing characteristics of more than 54,000 diamonds, e.g., price, carat, cut and color. Let's have a look.
+
+```{r help_diamonds}
+#use the integrated help in R Studio for further information
+help(diamonds)
+
+```
+
+
+```{r exploring_diamonds_01}
+#summary() of each variable: five-point statistics (numeric), number of entries per levels (factor)
+summary(diamonds)
+
+```
+
+
+## Basic plots
+
+The grammar of ggplot2 is intuitive and provides an easy start creating attractive graphs. The structure of ggplot2 is explained in more in the tutorial slides.
+
+Basically we have to start with the definition of our dataset and the variables we want to plot (x-axis, y-axis). How the data should be visulalized is defined by geometric objects, shortly geom_xy(), and is added in second step to the definition of our data space.
+
+The package ggplot2 contains a number of geoms - here we get started with:
+	*Scatter plots: geom_point()
+	*Line plots: geom_line()
+	*Bar charts and histograms: geom_bar(), geom_histogram()
+	*Box-plots: geom_boxplot(), stat_boxplot()
+	*Multiple facets of variables: facet_grid(), facet_wrap()
+
+
+
+### 1 - Scatter plot
+
+_Scatter plots are used to compare two continouse variables_
+
+#### Carat vs. Price
+
+Plot the relation of carat and price of diamonds. [_Carat_](https://en.wikipedia.org/wiki/Carat_(mass)) is a measure of the weight or mass, equal to 200 mg, of pearls and gemstones. 
+
+```{r scatter_01}
+#definition of the data set and variables for each axis.
+ggplot(diamonds, aes(x = carat, y = price))
+
+```
+
+But? No graphic! What's wrong? We have to define how ggplot2 should illustrate our plot by adding a __geom_xy()__ (geometric object) of choice.
+
+The __geom_point()__ creates a dot for each data point corresponding to the data.
+
+```{r scatter_02}
+#adding geom_point()
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point()
+
+```
+
+Here we go! Great, your first scatter plot.
+
+#### Carat vs. Price and colored Cut
+
+Let's add a third variable to make it more interesting. The _cut_ of a diamond affects the quality of a gemstone. How does it look like when we color the dots corresponding to the variable _cut_?
+
+We are modifying the color of each dot. Therefore we have to define an aesthetics for each data point in the __geom_point()__ as shown below in the code.
+
+
+```{r scatter_03}
+#Color each dot regarding diamonds cut
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point(aes(color = cut))
+
+```
+
+
+### 2 - Line plot
+
+_Line plots_ are useful for the visulaization of a discrete (x-axis) and a continous (y-axis) variable.
+
+#### Cut vs. Price
+
+```{r line_01}
+#line plots and alpha (transparency)
+ggplot(diamonds, aes(x=carat, y=price, color=cut)) +
+    geom_line(alpha=0.6)
+
+```
+
+
+### 3 - Histograms and bar charts
+
+__geom_bar()__ and __geom_histogram()__ are geoms visualizing 1D area plots: bar charts are used for categorical x and
+histograms for continous y-values.
+
+The bar height reflects either a count of events in each group, or the exact values in a column of the data frame that is plotted. Therefore we only have to specify the variable x in the plot definition.
+
+
+#### Bar chart
+
+Visualization of counts per catogery. Here an example of the distribution of the number of diamonds per clarity level.
+
+Hint: For the illustration of exact values in a bar plot use _stat = 'identity'_ and add a definition of the y-value in the aesthetics _aes()_.
+
+```{r bar_01}
+#a simple bar chart
+ggplot(diamonds, aes(clarity)) + 
+	geom_bar()
+
+```
+
+A stacked bar chart showing the distribution of counts in diamond clarity splitted by cut levels. The parameter _fill_ can be added either in the plot description or as aesthetics in the geom.
+
+```{r bar_02}
+#distinguishing categories in bar charts
+ggplot(diamonds, aes(clarity, fill=cut)) + 
+	geom_bar()
+
+#ggplot(diamonds, aes(clarity) + 
+#	geom_bar(aes(fill = cut))
+
+```
+
+Moving bars of one catogery next to each other by adding _position_ parameter. Dodge means: Adjust position by dodging / moving overlaps to the side.
+
+```{r bar_03}
+#dodging bar charts next to each other
+ggplot(diamonds, aes(clarity, fill=cut)) + 
+	geom_bar(position="dodge")
+
+#creates the same plot
+#ggplot(diamonds, aes(clarity, fill=cut)) + 
+#	geom_bar(position=position_dodge())
+
+```
+
+#### Histogram
+
+important parameter: binwidth, bin
+
+The default is to use bins bins that cover the range of the data. You should always override this value, exploring multiple widths to find the best to illustrate the stories in your data.
+
+
+```{r histogram_01}
+#simple histogram showing the distribution of diamond prices
+ggplot(diamonds, aes(price)) +
+  geom_histogram()
+
+```
+
+```{r hisogram_02}
+#definition of number of bins
+ggplot(diamonds, aes(price)) +
+  geom_histogram(bins = 200)
+```
+
+
+```{r histogram_03}
+#definition of binwidth
+ggplot(diamonds, aes(price, fill = cut)) +
+  geom_histogram(binwidth = 500)
+
+```
+
+
+
+### 4 - Boxplot
+
+Boxplots are a helpful tool to compare different statistical parameters at one glance. 
+
+The upper and lower box ends correspond to the first and third quantiles. The bar inside the box represents the median of the distribution.
+
+```{r boxplot_01}
+#a simple boxplot helps to compare distributions and related statistics
+ggplot(diamonds, aes(x=cut, y=price)) + 
+	geom_boxplot()
+
+
+```
+
+
+How to add whisker? Use the integrated statistics _stat_xy_ of __ggplot2__. Statistics calculate and return values based on the graph definition and are directly applied.
+
+```{r boxplot_02}
+#stat_boxplot for defining whisker
+ggplot(diamonds, aes(x = cut, y = price))  + 
+ stat_boxplot(geom ='errorbar', width = 0.65) + 
+ geom_boxplot() 				# or: stat_boxplot(geom='boxplot')
+
+```
+
+Also boxplots are distinguishable by another catogery using the _fill_ in aesthetics _aes()_.
+
+```{r boxplot_03}
+#boxplot grouping prices per color for each cut level, transformation y-axis into log-scale
+ggplot(diamonds, aes(x = cut, y = price, fill = color)) + 
+	geom_boxplot() + 
+	scale_y_log10()
+
+```
+
+
+
+### 5 - Multiple facets
+
+The package __ggplot2__ offers two different ways of splitting a complex graph into multiple facets by a single factor or maximum two factors. 
+
+_facet_wrap()_ arranges the separate facets subsequently next to each other. The number of rows and columns can be defined as additional parameter.
+
+
+```{r multiple_01}
+#splitted by color and arranged in the two rows
+ggplot(diamonds, aes( x = carat, y = price))+
+	geom_point(aes(color = clarity))+
+	facet_wrap(~color, nrow = 2)
+
+```
+
+_facet_grid()_ creates a matrix-based arrangement of our plots. Dataset factors are separated by the symbol "~". If there is only a single paramter applied as x coordinate, the second one has to be coded with a placeholder ".", e.g., + facet_grid(color ~ .).
+
+```{r multiple_02}
+#same plot - more beautiful
+ggplot(diamonds, aes(carat, price, color = clarity)) +
+	geom_point() +
+	facet_grid(color~clarity)+                     	#splitted into grid / matrix (x ~ y)
+	theme(axis.text = element_text(size = 6),       #modifying grid parameter: smaller text sizees
+			strip.text = element_text(size = 8)) +
+	scale_color_manual(values = brewer.pal(8, 'Spectral'))+		#changing colors using RColorBrewer
+	ggtitle('A beautiful ggplot2')	#plot title
+
+```
+
+
+## It's your turn!
+
+###__Task #1:__
+
+Description of the plot:
+
+	*x-axis: clarity
+	*y-axis: counts
+	*grouping: cut (labels right side of graphs)
+	*color: cut
+	*additional: plots below each other in one column, splitted by cut
+
+
+```{r you_01}
+#start here
+
+
+
+```
+
+
+
+###__Task #2:__
+
+Description of the plot:
+
+	*x-axis: clarity
+	*y-axis: counts
+	*grouping: cut (labels right side of graphs)
+	*color: cut
+	*additional: bars next to each other per condition
+	
+```{r you_02}
+#your second trial
+
+```
+
+
+###__Task #3:__
+
+Description of the plot:
+
+	*x-axis: price
+	*y-axis: counts, normalized to 1, stacked
+	*grouping: cut
+	*binwidth: 500
+
+```{r you_03}
+#the final one
+
+
+```
+
+
+## Further information
+
+### Useful commands
+Here are summarised the most common commands and parameters of __ggplot2__. Just play with them and see how they are working.
+
+```{r commands_ggplot2, tidy=TRUE}
+
+# coord_flip()   											- rotates your plot
+# theme_bw()													- a black and white scheme
+# aes(shape = , color = )							- define a variable to this parameter inside aes() and modify the shape of points or the color
+# aes(fill = )												- use to distinguish a variable in a bar plot, histogram or boxplot
+# scale_fill/color_manual()						- define your own colors
+
+```
+
+
+### More examples and help
+
+There are plenty of neat tutorials and nice examples. Our favorites ones are:
+
+* [Cookbook for R](http://www.cookbook-r.com)
+* [ggplot2 cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+* [stackoverflow](http://stackoverflow.com)
+
+
+
+
+
+
+
+
+

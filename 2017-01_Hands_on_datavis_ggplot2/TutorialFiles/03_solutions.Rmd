@@ -1,0 +1,128 @@
+---
+title: 'Solutions - #1 Hands-on data vis w/ ggplot2'
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document: default
+---
+
+# How many ways exist to the same plot?
+
+```{r init_libraries, include=FALSE}
+library(ggplot2)
+
+#another useful packages
+library(RColorBrewer)
+
+
+#set path for figure export and size
+knitr::opts_chunk$set(fig.width=7, fig.align='center', fig.height=5, fig.path='HandsOn_ggplot2-',  
+                      echo=TRUE,  #show R code
+                      warning=FALSE, #show warnings
+                      message=TRUE) #show messages
+
+
+#make plots nicer
+# R-Ladies ggplot2 theme from Samantha Tyner
+
+r_ladies_theme <- function(base_size){
+  theme_bw(base_size) %+replace% 
+     theme(#text = element_text(family = "HelveticaNeue", face = "plain", size = base_size,
+    #                           colour = 'black',
+    #                           hjust = .5, vjust = .5, angle = 0, 
+    #                           lineheight = 1.1, 
+    #                           margin = margin(t = 0, r = 0, b = 0, l = 0, 
+    #                                           unit = "pt"), 
+    #                           debug= FALSE), 
+          axis.text = element_text(colour = "#181818"), 
+          axis.title = element_text(face = "bold", colour = "#88398A", size = rel(1.1)), 
+          plot.title = element_text(face = "bold", size = rel(1.4), 
+                                    colour = "#88398A", 
+                                    margin = margin(t = 0, r = 0, b = 6.6,
+                                                    l = 0, unit = "pt")),
+          legend.title = element_text(face = "bold", colour = "#181818"),
+          panel.grid.major = element_line(color = "#D3D3D3"))
+}
+
+theme_set(r_ladies_theme(base_size = 12))
+
+```
+
+
+## Plot 1
+
+Description of the plot:
+
+	*x-axis: clarity
+	*y-axis: counts
+	*grouping: cut (labels right side of graphs)
+	*color: cut
+	*additional: plots below each other in one column, splitted by cut
+	
+
+```{r task_01}
+
+#solution 1
+ggplot(diamonds, aes(clarity)) + 
+  geom_bar(aes(fill = cut)) +
+  facet_grid(cut ~ .)  
+
+#solution 2
+ggplot(diamonds, aes(clarity, fill = cut))+
+	geom_bar(aes(fill = cut)) +
+  facet_grid(cut ~ .)  
+
+#solution 3
+ggplot(diamonds, aes(clarity))+
+	geom_histogram(stat = 'count', aes(fill = cut)) +
+  facet_grid(cut ~ .)  
+
+```
+
+
+## Task #2
+
+Description of the plot:
+
+	*x-axis: clarity
+	*y-axis: counts
+	*grouping: cut (labels right side of graphs)
+	*color: cut
+	*additional: bars next to each other per condition
+
+```{r task_02}
+
+#solution 1
+ggplot(diamonds, aes(clarity)) + 
+  geom_bar(aes(fill = cut), position = "dodge")
+
+#solution 2
+ggplot(diamonds, aes(clarity, fill = cut)) + 
+  geom_bar(position = "dodge")
+
+#solution 3
+ggplot(diamonds, aes(clarity))+
+	geom_histogram(stat = 'count', aes(fill = cut), position = 'dodge') 
+```
+
+
+## Task #3
+
+Description of the plot:
+
+	*x-axis: price
+	*y-axis: counts, normalized to 1, stacked
+	*grouping: cut
+	*binwidth: 500
+
+```{r task_03}
+
+#solution 1
+ggplot(diamonds, aes(x=price, fill=cut)) +
+	geom_histogram(position="fill", binwidth = 500)
+
+#solution 2
+ggplot(diamonds, aes(x=price)) +
+	geom_histogram(position="fill", binwidth = 500, aes(fill = cut))
+
+```

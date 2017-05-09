@@ -1,0 +1,268 @@
+---
+title: "dplyr tutorial"
+output:
+  #html_document: default
+  #pdf_document: default
+  output: html_notebook
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Dplyr is a grammar for data manipulation. It combines various steps of manipulation in one chunk of code without nesting. 
+
+For more information check the official [webside](http://dplyr.tidyverse.org/).
+
+##Tidyverse
+The package is part of the "tidyvers-Universe". 
+Tidyverse is a a collection of packages which share a common philosophy of data analysis and R programming and are designed to work together seamlessly.
+
+- ggplot2, for data visualisation.
+- dplyr, for data manipulation.
+- tidyr, for data tidying.
+- readr, for data import.
+- purrr, for functional programming.
+- tibble, for tibbles, a modern re-imagining of data frames.
+
+They share common data representation and API design and the tidyverse package allows you to install an update them as a set (they update frequently).
+
+
+##Introduction
+This tutorial will introduce the basic commands to work with dplyr.
+This [cheat sheet](https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf)by R-Studio gives a overview of more helpful commands.
+
+The functions work in a "regular" way and in the %>%-version. 
+
+  + function(data,....)
+
+or
+
+  + data %>% function(....).
+
+As the author of this tutorial likes the %>% a lot, most functions will be shown in this way.
+The shortcut for ' %>% ' is strg+command+m  
+<br>
+<br>
+Let's get started. First you have to install and load the the tidyverse package (or dplyr and ggplot2 if you want to do it separatly). 
+
+```{r message=FALSE}
+library(tidyverse)
+#we use the diamonds-data 
+```
+
+
+##select()
+selects a set of columns
+
+```{r}
+
+#Classic Style
+select(diamonds, cut, color) 
+
+```
+```{r}
+#pipe-style
+diamonds %>% select(cut,color) 
+```
+
+```{r}
+#adding the comand head at the end, to only select the fist five rows
+diamonds %>% select(cut, color) %>% head
+```
+
+```{r}
+#select all rows staring with "c" 
+diamonds %>% select(starts_with('c'),price)
+
+#Also works with ends_with(), contains(), matches(),...
+```
+
+#filter
+You can filter by the values of one or more columns.
+
+```{r}
+#filter by one column
+diamonds %>% filter(color=='E')
+diamonds %>% filter(price>350)
+```
+
+```{r}
+#the %in%-command is usefull to filter on several values
+diamonds %>% filter(color %in% c('E','F'))
+```
+
+```{r}
+#The ! in front of the command changes the operator to "not in"
+diamonds %>% filter(!color %in% c('E','F')) 
+```
+
+```{r}
+#filter on more than one column
+
+#The "AND"-combination can be done in two ways
+diamonds %>% filter(color=='E' , price>350) 
+
+#diamonds %>% filter(color=='E' & price>350)
+#has the same output
+
+```
+
+```{r}
+#filtering with "OR" on two columns
+diamonds %>% filter(color=='E' | price>350)
+
+
+```
+
+#arrange 
+reorder the rows by one or more columns
+```{r}
+#reorder by the column "cut"
+diamonds %>% arrange(cut)
+```
+
+```{r}
+
+#reorder by the column cut and price. To order in descending way, put the column in desc()
+diamonds %>% arrange(cut,desc(price)) 
+
+
+```
+#mutate 
+you can create new columns via mutate
+
+```{r}
+#simple new column
+diamonds %>% select(cut, color, price) %>% 
+              mutate(price_n = price*1000)
+```
+
+```{r}
+
+#new column base on a case-statement
+diamonds %>% select(cut, color, price) %>% 
+              mutate(cut_n = case_when(.$cut=='Ideal' ~ '1',
+                                      .$cut=='Premium' ~ '2',
+                                      .$cut=='Very Good' ~ '3',
+                                      .$cut=='Good' ~ '4',
+                                      .$cut=='Fair' ~ '5',
+                                      TRUE ~ '9'))
+#if you miss a value, it is going to be NA
+# the TRUE-statement ist kind of like a "else"-statement
+
+```
+#summarise 
+
+You can use all kind of functions to summarize the data (sum, mean, median, .....). 
+
+```{r}
+#calculating the mean of the column price
+diamonds %>% summarise(mean(price))
+```
+
+```{r}
+
+#adding the number distinct values of the column cut and the number of rows in the dataframe
+diamonds %>% summarise(mean_price=mean(price),
+                       num_cut=n_distinct(cut),
+                       num_row=n())
+
+```
+
+#group_by 
+group_by builds groups by the defined columns and does the operations within those groups.
+For those familiar with sql it works pretty much the same as "group by"
+
+```{r}
+#Group by one column and then summarising with those groups
+diamonds %>% group_by(cut) %>% summarise(mean_price=mean(price))
+```
+
+#piping comands together
+So fare the commands mostly just looked different to "regular" r-commands. Maybe are more straight forward. But to experience (IMO) the real advantage of the dplyr-package, you have to start piping the commands. 
+
+```{r}
+
+# Select all diamonds with a fair cut and then calucate the mean price depending on the clarity
+diamonds %>% filter(cut=='Fair') %>% group_by(clarity) %>% summarise(mean_price=mean(price))
+
+
+```
+
+
+# some more helpfull functions
+
+##cast / melt -> functions of the reshaping2 package
+If you don't know the functions, check them out. They really help to reorganize data.
+<br>
+in this context (tidyvers-universe) they are called spread and gather and are part of the package "tidyr"
+```{r}
+
+#spread the result 
+
+diamonds %>% 
+  filter(cut!='Fair') %>% 
+  group_by(cut,clarity) %>% 
+  summarise(mean_price=mean(price)) %>% 
+  spread(key=cut,value=mean_price)
+```
+
+```{r}
+
+
+#reversing the spread with gather
+diamonds %>% 
+  filter(cut!='Fair') %>% 
+  group_by(cut,clarity) %>% 
+  summarise(mean_price=mean(price)) %>% 
+  spread(key=cut,value=mean_price)  %>% 
+  gather(cut,price, Good:Ideal )
+  
+```
+
+
+##show the entire data.frame
+dplyr always shows the first 10 rows, but sometimes you just want to see them all
+
+```{r}
+#to see the result in the console, use print(n=nrow(.))
+diamonds %>% 
+  filter(cut!='Fair') %>% 
+  group_by(cut,clarity) %>% 
+  summarise(mean_price=mean(price)) %>% 
+  spread(key=cut,value=mean_price)  %>% 
+  gather(cut,price, Good:Ideal ) %>% 
+  print(n = nrow(.))
+```
+
+```{r}
+
+#if you use View() RStudio opens a new tab with the data
+diamonds %>% 
+  filter(cut!='Fair') %>% 
+  group_by(cut,clarity) %>% 
+  summarise(mean_price=mean(price)) %>% 
+  spread(key=cut,value=mean_price)  %>% 
+  gather(cut,price, Good:Ideal ) %>% 
+  View()
+
+
+```
+
+
+##some helpfull other tutorials
+
+- [Data Manipulation with dplyr](https://www.r-bloggers.com/data-manipulation-with-dplyr/)
+- [Lesser known dplyr tricks](https://www.r-bloggers.com/lesser-known-dplyr-tricks/)
+- [Some tricks on dplyr::filter](https://sebastiansauer.github.io/dplyr_filter/)
+
+
+
+Have fun exploring your data!
+
+
+
+
+

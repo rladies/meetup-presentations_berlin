@@ -10,7 +10,9 @@
   
   ## 2017
    [2017-06 R meets Journocode and hands-on R markdown](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-06_R_meets_Journocode_Rmarkdown)
+   
    [2017-05 Intro to DRY and hands-on dplyr](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-05_DRYprogramming_dplyr)
+   
    [2017-03 Hands-on data vis with ggplot2](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-01_Hands_on_datavis_ggplot2)
  
   ## 2016

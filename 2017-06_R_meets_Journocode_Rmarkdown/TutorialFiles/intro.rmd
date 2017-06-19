@@ -1,0 +1,7 @@
+# Hands-on training R markdown
+
+Here you find all files and material for the tutorial. 
+
+Download the complete Github repo and open the Rstudio project of each tutorial separately to access all example files
+
+In case of questions - please drop a line at berlin@rladies.org.

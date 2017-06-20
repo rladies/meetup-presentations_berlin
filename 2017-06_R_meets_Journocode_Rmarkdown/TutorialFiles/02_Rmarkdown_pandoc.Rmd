@@ -1,0 +1,122 @@
+---
+output: 
+  pdf_document:
+    citation_package: natbib
+    keep_tex: true
+    toc: yes
+    fig_caption: true
+    latex_engine: pdflatex
+    template: textemplate_svmiller.tex
+title: "A Pandoc Markdown Article Template modified for R-Ladies Berlin"
+thanks: "Replication files are available on the author's Github account (http://github.com/svmiller). **Current version**: `r format(Sys.time(), '%B %d, %Y')`; **Corresponding author**: svmille@clemson.edu."
+author:
+- name: Steven V. Miller
+  affiliation: Clemson University
+- name: Christin
+  affiliation: R-Ladies Berlin, Germany
+abstract: "This document provides an introduction to R Markdown
+and presents a sample manuscript template intended for an academic audience. 
+R-Ladies Berlin added some example plots to illustrate the power of R markdown and pandoc."
+keywords: "pandoc, r markdown, knitr, R-Ladies Berlin"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 11pt
+#spacing: double
+---
+
+# Introduction
+
+Pandoc is a universial document converter.
+
+Pandoc understands a number of useful markdown syntax extensions, including document metadata 
+(title, author, date); footnotes; tables; definition lists; superscript and subscript; strikeout; 
+enhanced ordered lists (start number and numbering style are significant); running example lists; 
+delimited code blocks with syntax highlighting; smart quotes, dashes, and ellipses; markdown 
+inside HTML blocks; and inline LaTeX. If strict markdown compatibility is desired, all of these 
+extensions can be turned off.
+
+# Getting started
+
+## Installation
+
+An extensive introduction to command line pandoc and installation recommendations are shown at 
+[Pandoc page](http://pandoc.org/getting-started.html).
+
+
+In generell it requires the installation of a latex distribution for rendering pdf documents,
+e.g., [Miktex](https://miktex.org).
+
+------
+
+## YAML extensions
+
+Optional extensions are listed in R markdown cheat sheet, e.g, 
+
+- author affiliations
+- content tables
+- bibliography
+- abstract
+
+## An R code example
+
+Let's include an example plot of the diamonds dataset and play with figure caption,
+size and table output formats.
+
+
+The theme has been developed by Samantha Tyner for R-Ladies global. It modifies
+the general ggplot2 settings.
+
+The following modifications are included:
+  *  text color changed to purple
+  *  bold axis description
+  *  grid color: grey 
+  *  legend title: bold and purple
+  *  plot title: purple, bold, slightly bigger x1.4
+  
+  
+```{r rladies_theme, tidy=TRUE}
+library(ggplot2)
+
+#make plots nicer
+# R-Ladies ggplot2 theme from Samantha Tyner
+
+r_ladies_theme <- function(base_size){
+  theme_bw(base_size) %+replace%
+    theme(axis.text = element_text(colour = "#181818"),
+          axis.title = element_text(face = "bold", 
+              colour = "#88398A", size = rel(1.1)),
+          plot.title = element_text(face = "bold", size = rel(1.4),
+                                    colour = "#181818",
+                                    margin = margin(t = 0, r = 0, b = 6.6,
+                                                    l = 0, unit = "pt")),
+          legend.title = element_text(face = "bold", colour = "#181818"),
+          panel.grid.major = element_line(color = "#D3D3D3"))
+}
+
+theme_set(r_ladies_theme(base_size = 10))
+
+```
+
+Let's create a simple plot based on the diamonds dataset. If you want to know more 
+about the dataset have a look ??diamonds.
+
+```{r example_plot, fig.cap='Example plot of diamonds data illustrating the price of diamonds per cut.'}
+
+ggplot(diamonds, aes(cut, price, color = cut))+
+  geom_jitter()+
+  ylab('Price in ($)')+
+  xlab('Cut class')
+
+```
+
+Here you can see how to print beautiful tables. Check out the different formats:
+markdown, html, latex, pandoc or rst.
+
+```{r example-table01, results='asis', tidy=TRUE, echo=FALSE}
+
+knitr::kable(head(diamonds), format = "latex", 
+  caption = "Just the first rows of the dataset diamonds")
+
+```
+

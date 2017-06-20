@@ -1,0 +1,115 @@
+---
+title: "First part - R markdown and it's syntax"
+author: "Christin"
+date: "18/06/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R markdown tutorial 
+
+This tutorial gives a quick overview how to write documents in 
+[R markdown](http://rmarkdown.rstudio.com).
+
+It is adapted from a tutorial published by Sebkopf at
+[Link](https://gist.github.com/sebkopf)
+
+## Markdown
+
+**Markdown** is a very basic and easy-to-use syntax for styling written documents.
+It's very easy to make some words **bold** and other words *italic* with Markdown.
+
+### Headers
+
+Start lines with a `#` to create headings. Multiple `##`, up to six ones, in a 
+row denote smaller heading sizes.
+
+You can include a quote, using the > character before the line:
+
+> R-Ladies Berlin are learning R markdown.
+
+### Lists
+
+Numbered lists - here to some useful resources for markdown:
+
+1. [Markdown Basics from R-Studio](http://rmarkdown.rstudio.com/authoring_basics.html)
+1. [Mastering Markdown from GitHub](https://guides.github.com/features/mastering-markdown/) (this is where most of the examples above come from)
+
+And the kind of things you can do with R markdown
+if you want to go beyond the basics:
+
+- [Lots of options for embedded R code](http://rmarkdown.rstudio.com/authoring_rcodechunks.html) (more details below)
+- [Bibliographies and References](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
+- [Interactive Documents](http://rmarkdown.rstudio.com/authoring_shiny.html)
+- And if you have sub points, put two spaces before:
+    - Like this
+    - And this
+
+### Equations
+
+Equation support can be very handy if you need to provide some formulas in your
+text, just use $\LaTeX$ [math](https://en.wikibooks.org/wiki/LaTeX/Mathematics): $x=\sum\beta\frac{\pi^2}{\gamma_i}$
+
+Or in case it's getting a bit more complicated:
+
+$$
+f(n) =
+  \begin{cases}
+    n/2       & \quad \text{if } n \text{ is even}\\
+    -(n+1)/2  & \quad \text{if } n \text{ is odd}\\
+  \end{cases}
+$$
+
+### Images
+
+Embedding images is as easy as the following:
+
+![R-Ladies global](https://rladies.org/wp-content/uploads/2016/12/R-LadiesGlobal.png)
+
+Now it's time to merge R and markdown!
+
+------
+
+## R markdown
+
+**R markdown** is a version of Markdown that is expanded to support running R code
+in between your text. The blocks of R code are called `chunks` and you can treat
+them as individual little segments of code, you can jump back and forth between them,
+run just individual ones or run all of them when you click the **Knit** button - this
+will generate a document that includes both content as well as the output of any
+embedded R code chunks within the document. This is an R code chunk:
+
+```{r my-first-chunk}
+data <- cars # get the cars data set as an example
+summary(data) # show a summary of the data set
+```
+
+You can also print out your data in table format if you want to include it in
+your document:
+
+```{r, results="asis"}
+library(knitr)
+kable(head(data))
+```
+
+Or you can print out the value of a variable in your text, say the value of $\pi$
+with **4 significant digits:** `r signif(pi, 4)` or the **number of data points** in
+your data set: `r nrow(data)`.
+
+And of course you can embed plots, for example:
+
+```{r my-plot, echo=FALSE, fig.width=10}
+plot(data)
+```
+
+For additional information on R and R markdown, there are lots of great resources
+on the internet and the R user community is very active and extremely helpful. 
+
+ - [R reference manual](http://cran.r-project.org/doc/contrib/Short-refcard.pdf) (a great overview of many useful R commands)
+ - [Regression analysis functions](http://cran.r-project.org/doc/contrib/Ricci-refcard-regression.pdf) (statistical analysis is one of the great strengths of R, this is a handy overview of useful functionality)
+ - [Stack Overflow](http://stackoverflow.com/) (a Q&A site for programming, searching for answers here often provides very helpful information)

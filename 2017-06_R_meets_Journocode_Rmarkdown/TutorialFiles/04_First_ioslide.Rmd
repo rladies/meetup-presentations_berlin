@@ -4,7 +4,7 @@ author: "Your name"
 date: "20/06/2017"
 output: 
   ioslides_presentation:
-    logo: rladies_berlin_logo_purple.pdf
+    logo: RLB_logo.png
 ---
 
 ```{r setup, include=FALSE}

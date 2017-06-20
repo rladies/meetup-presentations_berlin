@@ -53,7 +53,7 @@ if you want to go beyond the basics:
 ### Equations
 
 Equation support can be very handy if you need to provide some formulas in your
-text, just use $\LaTeX$ [math](https://en.wikibooks.org/wiki/LaTeX/Mathematics): $x=\sum\beta\frac{\pi^2}{\gamma_i}$
+text, just use LaTeX [math](https://en.wikibooks.org/wiki/LaTeX/Mathematics): $x=\sum\beta\frac{\pi^2}{\gamma_i}$
 
 Or in case it's getting a bit more complicated:
 
@@ -69,7 +69,7 @@ $$
 
 Embedding images is as easy as the following:
 
-![R-Ladies global](https://rladies.org/wp-content/uploads/2016/12/R-LadiesGlobal.png)
+![R-Ladies global](RLB_logo.png)
 
 Now it's time to merge R and markdown!
 

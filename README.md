@@ -4,11 +4,14 @@
  
   R-Ladies Berlin founded in October 2016 by Christin Zasada
   
-  Co-organizer Hannah Tillmann and Noa Tamir
+  Co-organizer Hannah Tillmann, Noa Tamir and supported by Ulrike Thalheim
   
-  berlin@rladies.org
+  Send us an e-mail at *berlin@rladies.org*
+  for further information!
   
   ## 2017
+  [2017-08 OK-Lab visits R-Ladies Berlin](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-08_OKlabBerlin)
+  
    [2017-06 R meets Journocode and hands-on R markdown](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-06_R_meets_Journocode_Rmarkdown)
    
    [2017-05 Intro to DRY and hands-on dplyr](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-05_DRYprogramming_dplyr)

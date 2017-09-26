@@ -10,6 +10,8 @@
   for further information!
   
   ## 2017
+  [2017-09 Epidemics Consortium at RLB](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-09_EpidemicsConsortium)
+  
   [2017-08 OK-Lab visits R-Ladies Berlin](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-08_OKlabBerlin)
   
    [2017-06 R meets Journocode and hands-on R markdown](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-06_R_meets_Journocode_Rmarkdown)

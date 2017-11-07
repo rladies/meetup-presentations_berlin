@@ -10,6 +10,8 @@
   for further information!
   
   ## 2017
+ [2017-11 ShinyDashboards at RLB](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-11_ShinyDashboards)  
+  
   [2017-09 Epidemics Consortium at RLB](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-09_EpidemicsConsortium)
   
   [2017-08 OK-Lab visits R-Ladies Berlin](https://github.com/rladies/meetup-presentations_berlin/tree/master/2017-08_OKlabBerlin)

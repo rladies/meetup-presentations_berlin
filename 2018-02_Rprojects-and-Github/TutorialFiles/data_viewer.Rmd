@@ -1,0 +1,18 @@
+---
+title: "Data viewer"
+author: "Christin"
+date: "20/02/2018"
+output: html_document
+---
+
+## Only a short script
+
+We are just creating a data frame to explore the new functions of the data viewer in R-Studio.
+
+```{r create_df}
+
+input = mtcars
+
+```
+
+

@@ -1,0 +1,834 @@
+---
+title: The magic of bootstrapping
+author: Steve Cunningham
+date: 2018-03-13
+output:
+  revealjs::revealjs_presentation:
+    fig_width: 8
+    fig_height: 6
+    fig_caption: true
+    transition: none
+    css: theme.css
+    highlight: pygments
+    reveal_options:
+      slideNumber: true
+---
+
+<h1 class="title">Introduction</h1>
+
+<!-- Fonts go here to prevent blank slide -->
+<style>
+@import url('https://fonts.googleapis.com/css?family=Merriweather|Open+Sans');
+</style>
+<!-- End fonts -->
+
+## What are we doing?
+
+* We all know how to calculate the mean and variance of a dataset.
+
+* We also know that these are just point estimates - they can change
+  if we get a new sample of data tomorrow.
+  
+* Often we want to be able to include a measure of uncertainty around
+  our estimates.
+  
+* Sometimes this is easy, sometimes it's not.
+
+## What are we doing?
+
+* Calculating the variance of an estimate usually relies
+  on specific closed-form expressions.
+  
+* Sometimes these expressions are difficult to calculate, 
+  require strong assumptions, or simply don't exist.
+  
+* Often, we can't be sure about the underlying distribution 
+  of our data.
+
+* Bootstrapping is an approach to inference that doesn't 
+  require assumptions about the underlying data-generating
+  process.
+
+---
+
+<h1 class="title">Background</h1>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE
+	, message = FALSE
+	, warning = FALSE
+	# for testing
+	# , cache=TRUE
+)
+```
+
+```{r}
+# uncomment these if you need to install anything
+# install.packages("tidyverse")   # for tidy data
+# install.packages("revealjs")    # for building presentation
+```
+
+
+```{r}
+library(tidyverse)      # tidy everything
+library(glue)           # for string formatting
+theme_set(theme_bw())   # nice theme for plots
+```
+
+## Two useful concepts
+
+**Law of Large Numbers**
+
+* As the number of observations grows, the mean of those observations 
+  tends towards the expected value of the underlying distribution.
+
+**Central Limit Theorem**
+
+* If we repeatedly sample the mean of a distribution, the means of 
+  those samples will be normally distributed.
+
+
+Both of these apply *regardless of the underlying distribution*.
+
+## Law of Large Numbers
+
+In code:
+
+```{r echo=TRUE}
+# Let's test the LLN on a normal distribution
+
+# set random seed so the graph looks the same each time
+set.seed(123) 
+
+# Generate 10k observations of a normal variable
+x <- rnorm(10000)
+
+# Calculate the cumulative mean of x
+lln <- data_frame(x) %>% 
+  mutate(
+    n = 1:n()                # an index to track n
+    , s = cumsum(x)          # cumulative sum of x
+    , avg = s / n            # cumulative mean of x
+  )
+```
+
+## Law of Large Numbers {.img-slide}
+
+```{r}
+# Plot the data
+lln %>% 
+  filter(n > 20) %>%         # filter out first 10 results
+  ggplot(aes(n, avg)) + 
+  geom_line() + 
+  labs(
+    title = "Demonstrating the law of large numbers"
+    , subtitle = "For 10k samples of a standard normal"
+  )
+
+```
+
+
+## Central Limit Theorem
+
+In code:
+
+```{r echo=TRUE}
+# Let's test the CLT on a binomial distribution
+
+# set random seed so the graph looks the same each time
+set.seed(123) 
+
+# Set up some parameters
+
+means <- c()    # vector to store the means
+n <- 1000       # binomial will have n trials
+p <- 0.05       # prob of success
+s <- 10000      # we will do this 10k times
+
+# hacky for-loop to calculate the means
+for (i in 1:s) {
+  x <- rbinom(n = n, size = 100, prob = p)
+  mu <- mean(x)
+  means <- c(means, mu)
+}
+```
+
+## Central Limit Theorem
+
+Create a data frame with a sample of observations:
+
+```{r echo=TRUE}
+observations <- data_frame(
+  x = rbinom(n = n, size = 100, prob = p)
+)
+```
+
+And one with the means we calculated:
+
+```{r echo=TRUE}
+
+means <- data_frame(x = means)
+
+```
+
+
+## Central Limit Theorem {.img-slide}
+
+```{r}
+observations %>% 
+  ggplot(aes(factor(x))) + 
+  geom_histogram(stat="count", alpha=.8) + 
+  labs(
+    title = "Observations from a binomial distribution"
+    , subtitle = glue("100 observations, each with n = {n} and p = {p}")
+    , x = "x"
+  ) 
+```
+
+## Central Limit Theorem {.img-slide}
+
+```{r}
+means %>% 
+  ggplot(aes(x)) + 
+  geom_histogram(alpha=.8) + 
+  labs(
+    title = "Sample means from a binomial distribution"
+    , subtitle = glue("For {s} sample means, each with n = {n} and p = {p}")
+  ) 
+
+```
+
+## Why is this useful?
+
+If we have enough samples of our data, then for any distribution we can:
+
+* Estimate the expected value
+* Estimate the distribution of the expected value
+* Even if we don't know anything about the distribution
+
+What if we don't have thousands of samples? What if we only have one?
+
+* Bootstrap!
+
+---
+
+<h1 class="title">Bootstrap</h1>
+
+## The bootstrap principle
+
+* In an ideal world, we would do statistics by 
+  repeatedly sampling the population and doing 
+  inference based on those samples (the **sample
+  distribution**).
+* In the real (crappier) world, we only get one
+  sample.
+* This sample is the **best approximation** we have
+  to the population.
+* So if we repeatedly sample our observations instead,
+  that's the best approximation we have to our ideal
+  world approach.
+* Bootstrapping is a way to approximate the sampling
+  distribution, which is a way to approximate the 
+  actual distribution.
+
+
+
+## Bootstrap 101
+
+Doing the bootstrap in 6 easy steps:
+
+1. Pick a function $T$ that you'd like to estimate.
+2. Sample $n$ observations from your dataset with replacement.
+3. Calculate $T(X)$ for that sample, call it $T^*$
+4. Do this $B$ times.
+5. Take the mean of all your $T^*$s, called $\bar{T}^*$
+6. Calculate the variance of $\bar{T}^*$ as:
+
+$$
+\mathbb{V}_T = \frac{1}{B} \sum_{b=1}^B \left( {T_{b}}^{*} - \bar{T}^* \right)^2
+$$
+
+## Rules
+
+* $T$ can be any function you like - *any function*.
+* $B$ can be as big as you like.
+    * By the LLN, the more observations we have of the mean,
+* $n$ should stay the same as your original sample size.
+* Why? The CLT predicts a specific normal distribution for your
+  sample means:
+    * Mean is the same as the underlying distribution.
+    * Variance is $\dfrac{\hat{\sigma}^2}{n}$, where $\hat{\sigma}^2$
+      is the variance of your sample.
+
+## Example
+
+Very simple approach:
+
+```{r}
+# reset random number generator
+set.seed(123)
+
+```
+
+```{r echo=TRUE}
+# Let's bootstrap the mean of a uniform(0,1) variable
+B = 10000           # we'll do this 10000 times
+n = 100             # with n = 100
+
+x <- runif(n)       # generate n observations
+boot <- c()         # save our mean here
+
+for (i in 1:B){     # do it!
+  x_star <- sample(x, n, replace = TRUE)
+  boot[i] <- mean(x_star)
+}
+```
+
+## Example {.img-slide}
+
+```{r}
+data_frame(x) %>% 
+  ggplot(aes(x)) +
+  geom_histogram(alpha = .7) +
+  labs(
+    title = "Original dataset"
+    , subtitle = glue("{n} observations of a Uniform(0,1)")
+  )
+```
+
+## Example {.img-slide}
+
+```{r}
+
+se <- sqrt(var(boot))
+
+data_frame(x = boot) %>% 
+  ggplot(aes(x)) +
+  geom_histogram(alpha = .7) +
+  labs(
+    title = "Bootstrapped mean"
+    , subtitle = glue("{B} bootstrapped means, standard error of {format(se, digits = 2)}")
+  )
+```
+
+## Tidy bootstrapping
+
+```{r echo=TRUE}
+library(modelr)
+```
+
+For-loops are great, but can get tricky if we want 
+to do anything other than simple statistics. 
+
+The tidyverse has some cool tools for generating and 
+manipulating samples on the fly.
+
+```{r}
+# reset random number generator
+set.seed(123)
+
+```
+
+```{r echo=TRUE}
+
+B <- 10000    # keep it small for now
+
+# bootstrap some samples
+samples <- data_frame(x) %>% 
+  # get B samples
+  modelr::bootstrap(B) 
+```
+
+## Tidy bootstrapping
+
+Gives us a set of samples (strap) each with an id:
+
+```{r echo=TRUE}
+samples %>% head()
+```
+
+
+## Tidy bootstrapping
+
+We can view the data like so:
+
+```{r echo=TRUE}
+
+samples %>% 
+  
+  # ugly
+  unnest(strap %>% map(as.data.frame)) %>% 
+  
+  head()
+
+```
+
+## Tidy bootstrapping
+
+Doing it on the fly:
+
+```{r echo=TRUE, eval=FALSE}
+
+samples %>% 
+  
+  # convert back to data
+  unnest(strap %>% map(as.data.frame)) %>% 
+  
+  # calculate mean of each sample
+  group_by(.id) %>%
+  summarize(avg = mean(x)) %>% 
+  
+  # plot!
+  ggplot(aes(avg)) + 
+  geom_histogram(alpha = .7)
+
+```
+
+## Tidy bootstrapping {.img-slide}
+
+```{r}
+
+samples %>% 
+  unnest(strap %>% map(as.data.frame)) %>% 
+  group_by(.id) %>% 
+  summarize(avg = mean(x)) %>% 
+  ggplot(aes(avg)) + 
+  geom_histogram(alpha = .7)
+
+```
+
+
+## Let's do more
+
+Say we're bored of estimating means, let's try bootstrap the variance:
+
+```{r echo=TRUE, eval=FALSE}
+
+samples %>% 
+  
+  # convert back to data
+  unnest(strap %>% map(as.data.frame)) %>% 
+  
+  # calculate variance of each sample
+  group_by(.id) %>%
+  summarize(variance = var(x)) %>% 
+  
+  # plot!
+  ggplot(aes(variance)) + 
+  geom_histogram(alpha = .7)
+
+```
+
+## Let's do more {.img-slide}
+
+```{r}
+
+samples %>% 
+  unnest(strap %>% map(as.data.frame)) %>% 
+  group_by(.id) %>% 
+  summarize(variance = var(x)) %>% 
+  ggplot(aes(variance)) + 
+  geom_histogram(alpha = .7)
+
+```
+
+## Bootstrap usecases
+
+1. I want to state the mean of some observations, and also include a measure
+  of certainty.
+2. I want to test a hypothesis about two groups, but I forgot how to do it.
+3. I want to estimate the correlation between two variables, including 
+  an estimate of confidence.
+4. I want to make a model more robust to overfitting.
+  
+<p style="text-align: center;"><br><br>¯\\\_(ツ)\_/¯</p>
+
+
+<!-- ## Bootstrapping with dplyr and broom -->
+
+## Confidence intervals
+
+* We want to be able to give an interval which we
+  are **reasonably confident** contains the true
+  value of the statistic we're estimating.
+* Often we want to be able to say we're **95% sure** that
+  this interval contains the true value.
+* That is, 95% of the time we construct this interval,
+  it will contain the true value.
+* We can find this interval by taking the middle 95%
+  of our bootstrapped distribution.
+  
+## Confidence intervals
+
+This technique is known as the **bootstrap percentile** method.
+
+```{r echo=TRUE}
+
+vars <- samples %>% 
+  unnest(strap %>% map(as.data.frame)) %>% 
+  group_by(.id) %>%
+  summarize(variance = var(x)) 
+
+# get the quantiles
+ci <- quantile(vars$variance, c(.025, .975))
+```
+
+```{r echo=TRUE, eval=FALSE}
+# plot!
+vars %>% 
+  ggplot(aes(variance)) + 
+  geom_histogram(alpha = .7) + 
+  geom_vline(xintercept = ci, linetype = "dashed")
+```
+
+## Confidence intervals {.img-slide}
+
+```{r}
+vars %>% 
+  ggplot(aes(variance)) + 
+  geom_histogram(alpha = .7) + 
+  geom_vline(xintercept = ci, linetype = "dashed")
+```
+
+
+
+## Bootstrap a difference 
+
+* Up until now we've just modelled a single variable.
+
+* Now we want to look at multiple variables.
+
+* We can still model this as single variable problem.
+
+* In this case, the single variable is the **difference** between 
+  two samples.
+
+## Bootstrap a difference 
+
+Summarizing the approach:
+
+* Get a bootstrap sample of variable A
+* Get a bootstrap sample of variable B
+* Calculate the difference in the means of the two samples
+* Do this $B$ times
+* Calculate the mean and confidence interval for the differences
+  
+## Bootstrap a difference 
+
+* Let's create some sample data.
+
+```{r}
+set.seed(123)
+```
+
+
+```{r echo=TRUE}
+# Two campaigns, each 10k emails, each either converted (1) or didn't
+n <- 1000
+mail_A <- rbinom(n, size=1, prob = 0.05)      # A converts with 5% probability
+mail_B <- rbinom(n, size=1, prob = 0.075)     # B converts with 7.5% probability
+
+means_A <- data_frame(x = mail_A) %>%         # Bootstrap the rates
+  modelr::bootstrap(B) %>% 
+  unnest(strap %>% map(as.data.frame)) %>% 
+  group_by(.id) %>%
+  summarize(a = mean(x)) 
+
+means_B <- data_frame(x = mail_B) %>% 
+  modelr::bootstrap(B) %>% 
+  unnest(strap %>% map(as.data.frame)) %>% 
+  group_by(.id) %>%
+  summarize(b = mean(x)) 
+
+means <- inner_join(means_A, means_B) %>%    
+    mutate(delta = b - a)                     # calculate the diffs
+```
+
+
+
+## Bootstrap a difference {.img-slide}
+
+```{r}
+means %>% 
+  # reshape the data
+  gather(mail, x, c(a, b)) %>% 
+  ggplot(aes(x, fill=mail)) +
+  geom_histogram(alpha = 0.7, position = "identity") + 
+  labs(
+    title = "Bootstrapped estimates of mail conversion rates"
+  )
+```
+
+## Bootstrap a difference {.img-slide}
+
+```{r}
+ci <- quantile(means$delta, c(.025, .975))
+
+means %>% 
+  ggplot(aes(delta)) +
+  geom_histogram(alpha = 0.7) + 
+  geom_vline(xintercept = ci, linetype = "dashed") + 
+  labs(
+    title = "Bootstrapped difference between mail conversion rates"
+  )
+```
+
+
+## Bootstrap a difference 
+
+<br>
+
+* Note that this means we are **95% confident** that this 
+  interval does not include zero.
+  
+* That is, we're 95% confident that the difference between
+  the two campaigns is greater than zero.
+  
+* This is a hypothesis test!
+
+## Comparison with a t-test
+
+<br>
+
+* Unlike a standard t-test, the bootstrap difference
+  makes no assumptions about equal variance or 
+  sample size between groups.
+  
+* For small samples, (n < 100) t-tests with correct 
+  assumptions are still more accurate.
+
+
+## Bootstrap correlation
+
+Let's bootstrap the correlation between two variables.
+
+```{r}
+set.seed(123)
+```
+
+```{r echo=TRUE}
+# generate x and y so that they are correlated
+x <- rnorm(1000)
+y <- x + rnorm(1000)
+
+```
+
+## Bootstrap correlation {.img-slide}
+
+```{r}
+
+data_frame(x, y) %>% 
+  ggplot(aes(x, y)) + 
+  geom_point(alpha = .5) 
+
+```
+
+## Bootstrap correlation
+
+The procedure is slightly different from last time:
+
+* Previously we sampled A and B independently.
+
+* This time we want to sample the pairwise distribution
+  of x and y.
+  
+## Bootstrap correlation
+
+In code:
+
+```{r echo=TRUE}
+data <- data_frame(x, y)
+
+correlations <- data %>% 
+  modelr::bootstrap(B) %>% 
+  unnest(strap %>% map(as.data.frame)) %>% 
+  group_by(.id) %>%
+  summarize(correlation = cor(x, y)) 
+
+```
+
+## Bootstrap correlation {.img-slide}
+
+```{r}
+ci <- quantile(correlations$correlation, probs = c(.025, .975))
+m <- mean(correlations$correlation)
+se <- sqrt(var(correlations$correlation))
+
+correlations %>% 
+  ggplot(aes(correlation)) +
+  geom_histogram(alpha = .7) + 
+  geom_vline(xintercept = ci, linetype="dashed") +
+  labs(
+    title = "Bootstrap estimate of correlation between x and y"
+    , subtitle = glue("Mean: {format(m, digits=2)}, standard error: {format(se, digits=2)}")
+  )
+```
+
+## Bootstrapping a model
+
+* Finally, let's bootstrap an entire linear model.
+
+* R has a bunch of built-in datasets, we're going to 
+  use 'mtcars':
+  
+```{r echo=TRUE}
+mtcars %>% head()
+```
+
+## Bootstrapping a model {.img-slide}
+
+```{r}
+# using built in data
+mtcars %>%
+  ggplot(aes(wt, mpg)) +
+  geom_point(alpha=.7) + 
+  labs(
+    title = "Weight versus miles per gallon"
+  )
+```
+
+## Bootstrapping a model
+
+Bootstrapping the parameters:
+
+```{r echo=TRUE}
+# bootstrap the params
+params <- mtcars %>% 
+  
+  # get 1000 samples
+  bootstrap(1000) %>% 
+  
+  # group by each sample individually
+  group_by(.id) %>% 
+  
+  # for each sample, fit a model
+  do(model = lm(mpg ~ wt, data=as.data.frame(.$strap))) %>% 
+  
+  # tidy up the model params
+  broom::tidy(model)
+```
+
+## Bootstrapping a model
+
+```{r}
+params %>% head()
+```
+
+
+## Bootstrapping a model {.img-slide}
+
+
+```{r}
+
+params %>% 
+  ggplot(aes(estimate)) + 
+  geom_histogram(alpha = .7) + 
+  facet_wrap(~term, scales = "free") +
+  labs(
+    title = "Bootstrapped parameter estimates"
+  )
+  
+```
+
+## Bootstrapping a model
+
+Bootstrapping the parameters:
+
+```{r echo=TRUE}
+# bootstrap the fits
+fits <- mtcars %>% 
+  
+  # get 100 samples (makes plotting nicer)
+  modelr::bootstrap(100) %>% 
+  
+  # group by each sample individually
+  group_by(.id) %>% 
+  
+  # for each sample, fit a model
+  do(model = lm(mpg ~ wt, data=as.data.frame(.$strap))) %>% 
+  
+  # augment original data with fitted values
+  broom::augment(model)
+
+```
+
+## Bootstrapping a model
+
+```{r}
+fits %>% head()
+```
+
+
+## Bootstrapping a model {.img-slide}
+
+```{r}
+
+fits %>% 
+  ggplot() + 
+  geom_point(aes(wt, mpg), alpha = .7) +
+  geom_line(aes(wt, .fitted, group = .id), alpha = .1)+
+  labs(
+    title = "Bootstrapped predictions"
+  )
+
+```
+
+## Bootstrapping a model
+
+<br>
+
+* The graph above highlights the uncertainty around 
+  picking a model based on one sample of the data.
+  
+* We can also use it to generate confidence intervals 
+  around parameter estimates.
+  
+* Building a model based on bootstrap samples is also
+  a way to avoid overfitting (known as bootstrap aggregating
+  or 'bagging'). 
+
+## Takeaways
+
+* Bootstrapping is a robust solution to many types of inference
+  problem. 
+  
+* It can be used for simple problems where you need an approximate answer
+  quickly.
+  
+* It can be used for more complicated problems where no closed-form
+  solution exists.
+  
+* The bigger your initial sample size, the better it works.
+
+## Caveats
+
+* Bootstrapping is not a solution to small sample problems.
+
+* Can still under-perform more specific tests at n < 100 (for normally
+  distributed data) or n < 5000 (for long-tail distributions).
+
+* Some remedies, see next slide.
+
+
+## Further reading
+
+* Wasserman, *All of Statistics*, chapters 7 and 8
+* Efron, *Bootstrap Methods: Another Look at the Jackknife*
+    * [link](https://projecteuclid.org/euclid.aos/1176344552)
+* Tim Hesterberg, *What Teachers Should Know About the Bootstrap*
+    * [short version](https://www.tandfonline.com/doi/pdf/10.1080/00031305.2015.1089789)
+    * [long version](https://arxiv.org/abs/1411.5279)
+* Stack Exchange:
+    * [Can bootstrap be seen as a “cure” for the small sample size?](https://stats.stackexchange.com/q/112147)
+    * [Why would I want to bootstrap when computing an independent sample t-test?](https://stats.stackexchange.com/q/128987)
+    * [Explaining to laypeople why bootstrapping works](https://stats.stackexchange.com/q/26088)
+
+
+---
+
+<h1 class="title">Thanks!</h1>
+
+
+
+

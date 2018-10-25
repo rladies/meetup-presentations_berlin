@@ -2,14 +2,22 @@
  
   # R-Ladies Berlin
  
-  R-Ladies Berlin founded in October 2016 by Christin Zasada
+  R-Ladies Berlin founded in October 2016 by Christin
   
-  Co-organizer Hannah Tillmann, Noa Tamir and supported by Ulrike Thalheim (also active as OK Lab organizer)
+  Co-organizer Hannah, Noa, Lisa, Olena, Liza and supported by Ulrike (OK Lab organizer)
   
   Send us an e-mail at *berlin@rladies.org*
   for further information!
   
+  Keep updated about upcoming [Meetup-Session](https://www.meetup.com/de-DE/rladies-berlin/)
+  
   ## 2018
+  [2018-10_Survival](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-10_survival)
+  
+  [2018-07_Dive_dplyr](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-07_Dive-dplyr)
+  
+  [2018-05_Crawling_Twitter](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-05_Crawling_Twitter)
+  
   [2018-04_Beauty of R programming](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-04_Beauty_Rprogramming)
   
   [2018-03_Bootstrapping with R](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-03_Bootstrapping-with-R)

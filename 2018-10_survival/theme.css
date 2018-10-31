@@ -1,0 +1,119 @@
+/* background colour */
+
+.reveal .slide-background {
+    /* background-color: #4da6ff; */
+    background-color: #1E90FF;
+}
+
+/* alt colour for image slides */
+.reveal .img-slide {
+    background-color: #fff;
+}
+
+.reveal .img-slide h1
+, .reveal .img-slide h2
+, .reveal .img-slide h3
+, .reveal .img-slide h4
+, .reveal .img-slide h5
+, .reveal .img-slide h6
+ {
+    color: #000;
+}
+
+/* fonts  */
+
+.reveal p {
+    text-align: left;
+    font-family: 'Open Sans', sans-serif;
+    margin-left: 20pt;
+    font-weight: 100;
+    color: #fff;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+    text-align: left;
+    font-family: 'Monaco', monospace;
+    font-weight: 700;
+    color: #fff;
+    line-height: 2;
+}
+
+/* title page */
+
+.reveal h1.title { 
+    padding-top: 30%;
+    line-height: normal;
+}
+.reveal h2.author { 
+    line-height: normal;
+    font-size: 80%;
+    font-family: 'Open Sans', sans-serif;
+}
+.reveal h3.date { 
+    line-height: normal;
+    font-size: 80%;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* lists */
+
+.reveal ul, .reveal ol {
+    display: block;
+    padding-left: 50pt;
+}
+
+.reveal li {
+    font-size: 80%;
+    padding-bottom: 15px;
+    color: #fff;
+}
+
+.reveal ul li ul {
+    padding-top: 15pt;
+    padding-left: 30pt;
+    font-size: 95%;
+}
+
+.reveal ol li ul {
+    padding-top: 15pt;
+    padding-left: 30pt;
+    font-size: 95%;
+}
+
+/* centered images, no border */
+
+.reveal section img {
+    display: block;
+    margin: 0 auto;
+    max-height: 100%;
+    max-width: 120%;
+    background:none;
+    border:none;
+    box-shadow:none;
+}
+
+/* code blocks */
+
+.reveal pre {
+    box-shadow: none;
+}
+
+.reveal pre code {
+    display: block;
+    padding: 15px;
+    overflow: auto;
+    max-height: 600px;
+    word-wrap: normal;
+    margin:20px auto;
+    font-family: monospace;
+    box-shadow: none;
+    border: none;
+    background-color: #F3F3F3;
+    border-radius: 10px;
+}
+
+/* latex */
+
+div.MathJax_Display {
+    padding-bottom: 15px;
+}

@@ -12,6 +12,9 @@
   Keep updated about upcoming [Meetup-Session](https://www.meetup.com/de-DE/rladies-berlin/)
   
   ## 2018
+  
+  [2018-11 Hands on training R-packages](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-11_Hands_on_training_Rpackages)
+  
   [2018-10_Survival](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-10_survival)
   
   [2018-07_Dive_dplyr](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-07_Dive-dplyr)

@@ -11,6 +11,10 @@
   
   Keep updated about upcoming [Meetup-Session](https://www.meetup.com/de-DE/rladies-berlin/)
   
+  ## 2019
+  
+  [2019-02_Hands-on_Web_Scraping_with_Riva](https://github.com/rladies/meetup-presentations_berlin/tree/master/2019-02_Hands-on_Web_Scraping_with_Riva)
+  
   ## 2018
   
   [2018-11 Hands on training R-packages](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-11_Hands_on_training_Rpackages)

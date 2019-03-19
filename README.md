@@ -2,9 +2,9 @@
  
   # R-Ladies Berlin
  
-  R-Ladies Berlin founded in October 2016 by Christin
+  R-Ladies Berlin founded in October 2016 by Christin 
   
-  Co-organizer Hannah, Noa, Lisa, Olena, Liza and supported by Ulrike (OK Lab organizer)
+  Current team of organizer: Hannah, Noa, Lisa, Olena, Liza and supported by Ulrike (OK Lab organizer)
   
   Send us an e-mail at *berlin@rladies.org*
   for further information!
@@ -12,6 +12,8 @@
   Keep updated about upcoming [Meetup-Session](https://www.meetup.com/de-DE/rladies-berlin/)
   
   ## 2019
+  
+  [2019-03_Hands-on_Textmining_with_Alison](https://github.com/rladies/meetup-presentations_berlin/tree/master/2019-03_Hands-on_Textmining_with_Alison)
   
   [2019-02_Hands-on_Web_Scraping_with_Riva](https://github.com/rladies/meetup-presentations_berlin/tree/master/2019-02_Hands-on_Web_Scraping_with_Riva)
   

@@ -2,7 +2,7 @@
  
   # R-Ladies Berlin
  
-  R-Ladies Berlin founded in October 2016 by Christin 
+  R-Ladies Berlin founded in October 2016 by @ChrisZasa
   
   Current team of organizer: Hannah, Noa, Lisa, Olena, Liza and supported by Ulrike (OK Lab organizer)
   

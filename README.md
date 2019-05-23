@@ -15,6 +15,8 @@
   
   ## 2019
   
+   [RethinkR](https://github.com/rladies/meetup-presentations_berlin/tree/master/RethinkR)
+   
    [2019-05_Hands-on_blogdown](https://github.com/rladies/meetup-presentations_berlin/tree/master/2019-05_Hands-on_blogdown_How_to_create_your_first_blog)
    
   [2019-03_Hands-on_Textmining_with_Alison](https://github.com/rladies/meetup-presentations_berlin/tree/master/2019-03_Hands-on_Textmining_with_Alison)

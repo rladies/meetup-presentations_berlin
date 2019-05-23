@@ -19,6 +19,10 @@
   
   [2019-02_Hands-on_Web_Scraping_with_Riva](https://github.com/rladies/meetup-presentations_berlin/tree/master/2019-02_Hands-on_Web_Scraping_with_Riva)
   
+  [2019-03_Hands-on_Textmining_with_Alison](https://github.com/rladies/meetup-presentations_berlin/tree/master/2019-03_Hands-on_Textmining_with_Alison)
+  
+  [2019-05_Hands-on_blogdown](https://github.com/rladies/meetup-presentations_berlin/tree/master/2019-05_Hands-on_blogdown_How_to_create_your_first_blog)
+  
   ## 2018
   
   [2018-11 Hands on training R-packages](https://github.com/rladies/meetup-presentations_berlin/tree/master/2018-11_Hands_on_training_Rpackages)

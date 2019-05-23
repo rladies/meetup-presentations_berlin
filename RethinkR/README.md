@@ -6,4 +6,4 @@ Here, we would like to share a piece of code and invite you to work with us on i
 If you have any chunk of code that you think that would be perfectly suitable - you are stuck and need a fresh view - get in touch with us here on meetup.
 
 
-[2019-05-29 First Session]()
+[2019-05-29 First Session](https://github.com/rladies/meetup-presentations_berlin/blob/master/RethinkR/2019-05-29_RethinkR.R)

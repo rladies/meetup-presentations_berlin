@@ -12,7 +12,7 @@ Please install or update the following R packages: `rmarkdown` & `blogdown`.
 ## Be active, Come prepared!
 
 Please take care to have the the lastest version of R and RStudio Desktop and the package blogdown installed. 
-You find instructions and comments for the installation of blogdown right [here](https://bookdown.org/yihui/blogdown/installation)
+You find instructions and comments for the [installation of blogdown](https://bookdown.org/yihui/blogdown/installation.html)
 
 Mac-User need also to install the following tools:
 

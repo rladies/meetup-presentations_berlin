@@ -17,18 +17,18 @@ Possible points of interest:
 - script vs markdown
 - base or dplyr 
 
-Go to: [Scenario1_0_master](https://raw.githubusercontent.com/rladies/meetup-presentations_berlin/master/RethinkR/scenario1_0_master.R) and [Scenario1_1_analysis](https://raw.githubusercontent.com/rladies/meetup-presentations_berlin/master/RethinkR/scenario1_1_analysis.R)
+Go to: [Scenario1_0_master](https://github.com/rladies/meetup-presentations_berlin/blob/master/RethinkR/scenario1_0_master.R) and [Scenario1_1_analysis](https://github.com/rladies/meetup-presentations_berlin/blob/master/RethinkR/scenario1_1_analysis.R)
 
 
 ### Scenario 2
 
 The second possible scenario deals with the various ways we can plot data. In [this](https://www.zeit.de/wissen/gesundheit/2017-11/alkoholkonsum-studie-schnaps-wein-bier-beeinflussung-stimmung) graph from an article in a German Newspaper of the moods we associate with different kinds of alcohol
 
-go to: [Scenario2_grapg](https://raw.githubusercontent.com/rladies/meetup-presentations_berlin/master/RethinkR/scenario2_graphic.R)
+go to: [Scenario2_grapg](https://github.com/rladies/meetup-presentations_berlin/blob/master/RethinkR/scenario2_graphic.R)
 
 
 ### Playground
 
 in the following markdown we will collect our ideas at the end and see what we came up with
 
-go to: [Playground](https://raw.githubusercontent.com/rladies/meetup-presentations_berlin/master/RethinkR/playground.Rmd)
+go to: [Playground](https://github.com/rladies/meetup-presentations_berlin/blob/master/RethinkR/playground.Rmd)

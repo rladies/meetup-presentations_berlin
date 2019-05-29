@@ -1,0 +1,367 @@
+---
+title: "Hands-on: Create your own blog with blogdown - R-Ladies Berlin"
+author: "Christin Zasada"
+date: "29/05/2019"
+output: 
+  html_document:
+    number_sections: TRUE
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false 
+      smooth_scroll: true
+    theme: simplex
+    highlight: tango
+    code_folding: 'hide'
+ #   includes:
+  #    after_body: footer.html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+# Acknowledgements
+
+The following content is a selection of already published workflows how to create a blog by Alison Presnam Hill, YuiHui and others. Content that might help the process are linked throughout this article directly.
+<br>
+An extensive list of links is work in progress and added as soon as possbile.
+<br>
+Originally, this hands-on tutorial has been created for a meetup session of R-Ladies Berlin. The content can be used for other R-Ladies meetups freely and without the need of consent.
+
+# Preparations
+
+Open RStudio desktop and start with the installation of the R package **blogdown** with the following code:
+
+```{r inst_blogdown}
+
+# install.packages("devtools")
+# devtools::install_github('rstudio/blogdown')
+
+#or
+install.packages('blogdown')
+
+```
+
+Proceed with the installtion of Hugo using the helper function provided by blogdown.
+
+```{r inst_hugo}
+
+blogdown::install_hugo()
+
+#or
+# library(blogdown)
+# install_hugo()
+
+#other relevant commands:
+blogdown::update_hugo()
+blogdown::hugo_version()
+
+```
+
+
+# Setup GitHub and RStudio
+## Create a new repository in GitHub
+
+Navigat to your profile on GutHub and create a new repository. Consider the following
+settings:
+
+  * Initialize with a README
+  * Add .gitignore (we do this later)
+  * Naming:
+    - Using Netlify: anything you can think of
+    - GitHub Page: use *yourgithubusername.github.io*
+  * Copy the repository URL
+  
+## Clone your remote repository
+
+Now you need to clone it to your computer, meaning to create a physical copy on your
+local disk. 
+
+You have two possibilities to do so. Select the one that suits you. 
+
+### In the terminal
+
+Follow the steps:
+
+  * Open the terminal on your computer
+  * Navigate (cd) to the directory where you would like to create the copy
+  * Type in the console 'git clone [paste url]'
+  * Close the terminal
+  
+Create a Rproject in the exact same directory in RStudio desktop: 'File -> New Project -> Existing Directory'
+  
+### In RStudio desktop
+
+Create a new project following the settings for a version control project using Git. 
+
+Paste the url and define the directory of your choice.
+
+## Modify .gitignore
+
+Perform this step independently of the way how you have created your Rproject.
+
+Open the file from the file browser in RStudio desktop and modify the content. The first four lines should be present already. Add the missing ones.
+
+```{r gitignore, eval=FALSE}
+
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+blogdown
+.DS_Store #for windows: Thumbs.db
+public/ #in case you use Netlify
+
+```
+
+# Build your site in RStudio
+
+## RStudio Addins
+
+RStudio desktop comes with a number of handy Addins and supports your creativity by reducing the usage of the code line to a minimum. 
+
+You find them in RStudio desktop in the toolbar at Addins.
+
+Most important ones:
+
+  * **Serve Site**: it provides the continouse integration of your changes and writing directly into the preview based on the LiveReload functionality.
+  * **New Post**: Add metadata and other information before even starting to write you have a clean backbone for your blog post.
+  * **Insert Image**: Browse through your computer and select the image you want to add.
+
+More details are summarised in the blogdown documentation [here](https://bookdown.org/yihui/blogdown/rstudio-ide.html#fig:project-options)
+
+## Choose your blog theme
+
+There are more then 90 [Hugo themes available](https://themes.gohugo.io) - it's difficult to pick one. Have a close look and check also the responsiveness on different devices, like laptop, mobile phone, if it matters to you.
+
+Yihui and friends compiled a [short overview](https://bookdown.org/yihui/blogdown/other-themes.html) about the themes they like.
+
+### With a few commands 
+The default theme is called lithium and gives your blog a clean and stylish appearance.
+
+'theme_example = TRUE' provides you a nice start with a number of template settings, just ready there to play with. Though, not every theme provides a template.
+
+```{r create_site}
+#for the default theme run -> we use this
+blogdown::new_site()
+
+#if you want to use a different theme
+blogdown::new_site(theme = "gcushen/hugo-academic", theme_example = TRUE)
+
+```
+
+If you want to add or change the theme later, proceed as Alison suggest:
+
+```{r theme_later}
+library(blogdown)
+new_site()
+install_theme("gcushen/hugo-academic", theme_example = TRUE, update_config = TRUE)
+
+```
+
+
+### Without any commands
+
+There is another possibility to create a blogsite directly from the menu 'New Project' in RStudio after the installation of blogdown. Only prerequisite - RStudio desktop v1.1.383 or higher.
+
+Without any commands you can setup your blog by defining theme and directory.
+
+**Follow:** 'New Project -> New directory -> Website using blogdown'
+
+Define the directory name and theme, check all boxes and click 'create project'.
+
+Here, you need to consider that this way means you need to connect your Rproject with GitHub later on. Read here how to do this: [Rproject first, GitHub last](https://happygitwithr.com/existing-github-last.html)
+
+## Adjust settings in  'Tools -> Project Options'
+
+The blogdown manual strongly suggest to deactive the following two boxes:
+
+  * Preview site after building
+  * Re-knit current preview when supporting files change
+  
+Why this is important - [read here](https://bookdown.org/yihui/blogdown/rstudio-ide.html#fig:project-options)
+
+
+# Explore your site
+## HUGO directory structure
+
+Useful read: [https://gohugo.io/getting-started/directory-structure/](https://gohugo.io/getting-started/directory-structure/)
+
+You should see now the following folders and files:
+
+  * archetypes*
+  * config.toml
+  * content
+  * data*
+  * layouts*
+  * public
+  * static*
+  * themes
+  
+
+
+## Serve the site
+
+Again two options - either with 'blogdown::serve_site()' or the recommended RStudio Addin
+<br>
+
+**LifeReLoad** serves as a handy tool do modify your content:
+
+  * Edit and save triggers
+  * Blocks your console on purpose
+  * Have a look at your site in a new window!
+  
+## Edit your configuration
+
+This point is crucial if you succeed in the first run. You need to change 'baseurl' in the file config.toml. 
+
+Later on, for deployment, you are going to replace the baseurl with, e.g. https://chriszasa.github.io/. Since we work for now in the local environment the below suggestions are working.
+
+Take care that the url ends with a trailing slash, always! 
+
+```{r config}
+
+baseurl = "https://example.com/"
+baseurl = "/"
+
+```
+
+## Proposed workflow of Alison
+
+  1. Open the Rstudio projet for the site
+  2. Use the serve Site add-in
+  3. View site in RStudio viewer pane and open in new browser
+  4. Select exisiting files to edit using the file pane in RStudio
+  5. After making changes, click the save button (**don't knit**) - console reload, viewer pane will update
+  6. When happy with the changes, add/commit/push changes to GitHub
+
+
+# Let's modify some content of config.toml
+
+## Update your personal informations
+
+One suggestion: Have a look at the config.toml files of other blogs. 
+
+The most important chunk is [params]. Here you personalize your blog.
+
+
+## Add a logo
+
+All static content for your site belongs into the directory **static/**, e.g. logos, images, CSS-files.
+
+  1. Move a picture or logo of your choice into static/
+  2. Rename the folder images: static/images
+  3. Update **config.toml** and **save**
+  
+```{r logo}
+[params.logo]
+  url = "logo.png"
+  width = 50
+  height = 50
+  alt = "Logo"
+
+```
+  
+Have a look at: **/themes/THEME/static/images/logo.png - a copy of your logo is located now in this folder.
+
+The file name of the logo can be anything since we define the url in config.toml. But this only works for themes HUGO knows about, meaning themes that follow the HUGO conventions of folder structure. 
+
+Read more here about it: [https://gohugo.io/themes/customizing](HUGO theme customization).
+
+## Change the About-page of your blog
+
+Navigate in the RStudio file pane to the folder **content/**. Here you store all the content of your blog, as the name of the folder already suggests. 
+
+Open the file about.md modify the content. 
+<br>
+Keep in mind that if your blog contains of two main sections (baseurl/post/ and baseurl/about) you have a folder post and about.rmd.
+
+## Enabling emojis
+
+Here we need to add few lines in config.toml.
+
+```{r}
+baseurl ="/"
+languageCode = "en-us"
+title = "R-Ladies Berlin"
+theme = "hugo-lithium-theme"
+enableEmoji = TRUE
+```
+There are plenty of options to tediously configure your blog! Have a look here in order to find the ones you need or in case you need inspiration: [https://gohugo.io/getting-started/configuration](https://gohugo.io/getting-started/configuration).
+
+
+
+# Posting - create your first post
+
+Highly recommended - use the **New Post** addin. Before you need to unblock the console clicking the red Stop button first.
+
+The YAML header summarises relevant information about your blog post and the configuration of your post. 
+<br>
+One important function: **draft: TRUE** - you are able to preview your post while running serve_site, but it won't show up online. Nevertheless you are going to have a copy in your GitHub online.
+<br>
+Select between two formats:
+
+  * Markdown (.md)
+  * R Markdown (.rmd)
+  
+Please keep in mind to re-serve your site and activate the LiveReload function.
+
+Another note, not all features of *rmarkdown::html_document* are supported in blogdown.
+
+
+# Deploy in Netlify through GitHub
+
+All information required to deploy your blog is stored in the folder public/. 
+
+Here again, the recommendation of Alison:
+
+  1. Commit your changes and push to github (commands below)
+  2. Go to Netlify and sign up with your existing GitHub account
+  3. Select New site from Git and Continous Deployment
+  4. Now select from your existing GitHub repositories
+  5. Configure the:
+    * build command (e.g., hugo_0.19)
+    * the publish directory (should be public)
+    
+    
+If you need to check the version of HUGO open your terminal and type **hugo version**.
+
+Netlify creates a random domain name - change this into, e.g. chriszasa.netlify.com
+<br>
+**Important:** When you change your subdomain name, you need to update the baseurl in your config.toml file!
+
+
+## Github commands
+
+This requires an exisiting connection between your local and remote repository. 
+Once you have done your modifications or finished your blogpost run the following commands
+
+```{r}
+git add . #adds all files to the index
+git commit -m "My informative commit messag" #publishing my first blogpost
+git push origin master #pushing the updated to the remote
+```
+
+
+# Finished
+
+Welcome to the blogging world - read your posts soon!
+<br>
+
+## Deploying with GitHub pages
+One final remark, if you want to use GitHub pages you need to build your site in a folder called **docs**, rather than **public**.
+
+Just add in config.toml below the baseURL the following line: publishDir = "docs".
+
+## Motivated? More things to explore
+
+Have a look at the beautiful slides of Alison for her blogdown session. There you find further modifications of the settings. 
+<br>
+Have a look at the material inline and dive into the documentations.
+
+
+
+
+
+

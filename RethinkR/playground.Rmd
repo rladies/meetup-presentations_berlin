@@ -1,0 +1,168 @@
+---
+title: "playground"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# RethinkR
+
+Lets see what we come up with 
+
+## Scenario 1
+
+### 1. Collective Coding
+```{r}
+
+```
+
+#### Suggest 1
+```{r}
+
+```
+
+#### Suggest 2
+```{r}
+
+```
+
+...
+
+
+### 2. Loading Packages
+```{r}
+
+```
+
+#### Suggest 1
+```{r}
+
+```
+
+#### Suggest 2
+```{r}
+
+```
+
+
+### 3. Set missings to NA
+```{r}
+
+```
+
+#### Suggest 1
+```{r}
+
+```
+
+#### Suggest 2
+```{r}
+
+```
+
+
+### 4. Summary Statistics
+```{r}
+
+```
+
+#### Suggest 1
+```{r}
+
+```
+
+#### Suggest 2
+```{r}
+
+```
+
+### 5. Deflated income
+```{r}
+
+```
+
+#### Suggest 1
+```{r}
+
+```
+
+#### Suggest 2
+```{r}
+
+```
+
+
+### 6. For loops
+```{r}
+
+```
+
+#### Suggest 1
+```{r}
+
+```
+
+#### Suggest 2
+```{r}
+
+```
+
+
+
+
+
+
+## Scenario 2
+```{r}
+
+```
+
+#### Suggest 1
+bar chart by drink
+```{r}
+ggplot(data = alcohol_long,
+       mapping = aes(x = characteristic, y = approval, fill = drink)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  #facet_grid(~ drink) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1)) +
+  coord_flip()
+```
+
+#### suggest2
+```{r}
+good <- c("selfconfident", "relaxed", "energetic", "attractive (sexy)")
+bad <- c("tired", "aggressive", "bad", "restless", "sad")
+
+# Dataset for plot
+p.alc <- alcohol_long %>% 
+  mutate(good = ifelse(X.1 %in% good, 1,0),
+         bad = ifelse(X.1 %in% bad,1,0),
+         approval2 = ifelse(good == 0, approval*(-1), approval)
+  ) 
+
+# For each kind of alcohol, how positive or negative are the effects
+ggplot(data = p.alc, mapping = aes(x = characteristic, y = approval2, fill = ..y.. > 0)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_grid(~ drink) +
+  scale_fill_manual(name = "Effect of Alcohol",
+                    values = c('red', 'green'),
+                    labels = c("negative", "positive"))+
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+
+
+# For each effect, how positive or negative is each alcohol
+ggplot(data = p.alc, mapping = aes(x = drink, y = approval2, fill = ..y.. > 0)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_grid(~ characteristic) +
+  scale_fill_manual(name = "Effect of Alcohol",
+                    values = c('red', 'green'),
+                    labels = c("negative", "positive"))+
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+```
+
+#### suggest 3
+ ideas:
+ - how much approval for positive modds as lineplot?
+ - how much approval for negative modds as lineplot

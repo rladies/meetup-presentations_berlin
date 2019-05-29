@@ -3,6 +3,8 @@
 # Graph is from German Newspaper, found in an article on which moods are associated with different kinds of alcohol
 # article can be found here: https://www.zeit.de/wissen/gesundheit/2017-11/alkoholkonsum-studie-schnaps-wein-bier-beeinflussung-stimmung
 
+(credits to Fabian Gülzau who used this example in a dataviz course)
+
 # Pakete laden
 library(tidyverse)
 

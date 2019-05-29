@@ -24,7 +24,7 @@ Go to: [Scenario1_0_master](https://github.com/rladies/meetup-presentations_berl
 
 The second possible scenario deals with the various ways we can plot data. In [this](https://www.zeit.de/wissen/gesundheit/2017-11/alkoholkonsum-studie-schnaps-wein-bier-beeinflussung-stimmung) graph from an article in a German Newspaper of the moods we associate with different kinds of alcohol
 
-go to: [Scenario2_grapg](https://github.com/rladies/meetup-presentations_berlin/blob/master/RethinkR/scenario2_graphic.R)
+go to: [Scenario2_graph](https://github.com/rladies/meetup-presentations_berlin/blob/master/RethinkR/scenario2_graphic.R)
 
 
 ### Playground

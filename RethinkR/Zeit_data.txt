@@ -1,0 +1,10 @@
+X.1	spirits	red.wine	white.wine	beer
+energetic	58	7	15	25
+selfconfidence	59	28	28	45
+relaxed	20	53	33	50
+attractive (sexy)	42	25	24	19
+tired	15	60	18	39
+aggressiv	30	3	3	7
+bad	48	20	15	17
+restless	28	5	6	9
+sad	22	17	10	10

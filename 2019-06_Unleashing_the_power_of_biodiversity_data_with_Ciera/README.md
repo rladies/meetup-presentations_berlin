@@ -7,6 +7,7 @@ We speak also about how to use R to map fossils of extinct animals.
 Please install or update the following packages:
 
 install.packages("pacman")
+
 pacman::p_load(ggplot2, ggmap, tidyverse, skimr, taxize, neotoma, maps)
 
 *********************************************************************************

@@ -3,7 +3,7 @@
 # Graph is from German Newspaper, found in an article on which moods are associated with different kinds of alcohol
 # article can be found here: https://www.zeit.de/wissen/gesundheit/2017-11/alkoholkonsum-studie-schnaps-wein-bier-beeinflussung-stimmung
 
-(credits to Fabian Gülzau who used this example in a dataviz course)
+# (credits to Fabian Gülzau who used this example in a dataviz course)
 
 # Pakete laden
 library(tidyverse)
@@ -12,7 +12,7 @@ library(tidyverse)
 alcohol <- read.csv(file = file.choose(), header = TRUE, stringsAsFactors = FALSE, sep = ";", encoding = "UTF-8")
 
 # OR no download needed
-alcohol <- readr::read_csv("https://raw.githubusercontent.com/rladies/meetup-presentations_berlin/master/RethinkR/Zeit_data.csv")
+alcohol <- read_delim("https://raw.githubusercontent.com/rladies/meetup-presentations_berlin/master/RethinkR/Zeit_data.csv", ";")
     
 glimpse(alcohol)
 

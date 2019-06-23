@@ -18,19 +18,8 @@
 
   # packages that are needed can be added underneath
   p_needed <- c("readr", # import spreadsheet data
-              "magrittr", # for piping
-              "haven", # imports SPSS, Stata and SAS files
-              "ggplot2", # for graphics
-              "tidyr",
-              "descr",
-              "stringr", # to manipulate/ work with strings
-              "janitor", # to clean dataframes
-              "readstata13", # to read Stata Data into R
-              "rstudioapi",
-              "dplyr",
-              "plm",  # panel regression analysis
-              "memisc",
-              "stargazer",  # output of regression results in Latex tables
+              # list of needed packages
+              # deleted for now, so that you don't accidentally install them all
               "tidyverse" # includes the packages important for every day data analyses
               )
   
@@ -46,10 +35,11 @@
 #***********************************************
 # Set relative paths to the working directory
 #***********************************************
+  
   # finds and sets the directory of the executed script
   # this code finds the local repository in which the R-script is executed,
-    dir_home <- dirname(rstudioapi::callFun("getActiveDocumentContext")$path) 
-    setwd(dir_home) 
+  dir_home <- dirname(rstudioapi::callFun("getActiveDocumentContext")$path) 
+  setwd(dir_home) 
   # other directories
   dir_log   <- "H:/Lehre/something/R scripte/log/"  # path to log dir
   dir_stata <- "H:/Lehre/something/SOEP32_core_50/" # path to data

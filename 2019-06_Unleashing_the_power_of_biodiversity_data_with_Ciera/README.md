@@ -2,6 +2,14 @@ With R-Lady **Ciera Martinez** (@CieraReports) from San Francisco we explore bio
 
 We speak also about how to use R to map fossils of extinct animals.
 
+**Unleashing the power of biodiversity data with data science**
+
+Lewis & Clark College Workshop, April 17, 2019
+
+Written By: Ciera Martinez and Sara Stoudt
+
+Workshop Website: https://cabinetofcuriosity.github.io/coc_lewis_clark_workshop/
+
 
 *********************************************************************************
 Please install or update the following packages:

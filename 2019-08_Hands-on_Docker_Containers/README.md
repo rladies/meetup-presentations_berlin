@@ -4,6 +4,6 @@ Amit Kothiyal and Evgeny Savin, Data Scientists from Smava GmbH, Berlin, will ex
 
 *********************************************************************************
 Set-up your machine to join the hands-on part:
-- (4 minutes) install and set-up docker: [](https://docs.docker.com/get-started/)
-- (10 minutes) pull r-base [](https://hub.docker.com/_/r-base) $ docker pull r-base
+- (4 minutes) install and set-up docker: [https://docs.docker.com/get-started/](https://docs.docker.com/get-started/)
+- (10 minutes) pull r-base [https://hub.docker.com/_/r-base](https://hub.docker.com/_/r-base) $ docker pull r-base
 *********************************************************************************
